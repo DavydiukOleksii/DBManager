@@ -84,6 +84,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Infrastructure\RelayCommand.cs" />
+    <Compile Include="Logic\HeroesProvider.cs" />
+    <Compile Include="Model\HeroModel.cs" />
+    <Compile Include="Model\SkillModel.cs" />
+    <Compile Include="Model\StatsModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="View\MainWindow.xaml.cs">
@@ -92,9 +96,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\HeroDB.cs" />
-    <Compile Include="Model\SkillDB.cs" />
-    <Compile Include="Model\StatsDB.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -131,6 +132,17 @@
       <Project>{617982a6-18e1-46f9-9058-08c2815e7fc8}</Project>
       <Name>DataViewModels</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Chan.jpg" />
+    <Resource Include="Resources\Nichosi.jpg" />
+    <Resource Include="Resources\Obama.jpg" />
+    <Resource Include="Resources\Smile.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\attack.png" />
+    <Resource Include="Resources\hearth.png" />
+    <Resource Include="Resources\shield.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.104.0\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.104.0\build\net45\System.Data.SQLite.Core.targets')" />

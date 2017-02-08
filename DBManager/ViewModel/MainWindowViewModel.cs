@@ -5,6 +5,8 @@ using System.Windows.Input;
 using DataRepository;
 using DBManager.Infrastructure;
 using DataViewModels;
+using DBManager.Logic;
+using DBManager.Model;
 
 namespace DBManager.ViewModel
 {
@@ -12,45 +14,34 @@ namespace DBManager.ViewModel
     {
         #region Data
         //collection with elements from data base
-        IEnumerable<HeroDb> _heroes;
-        public IEnumerable<HeroDb> Heroes 
+        IEnumerable<HeroModel> _heroes;
+        public IEnumerable<HeroModel> Heroes 
         {
             get
             {
                 if (_heroes == null)
                 {
-                    try
-                    {
-                        _heroes = HeroesRepository.Instance.GetAll();
-                        Console.WriteLine(_heroes.Count());
-                        OnPropertyChanged("Heroes");
-                    }
-                    catch (Exception e)
-                    {
-                            
-                        Console.WriteLine(e.Message);
-                    }
-                    
+                    _heroes = HeroesProvider.GetAll();
+                    _selectedHeroes = _heroes.First();   
+                    OnPropertyChanged("Heroes");
                 }
                 return _heroes;
             }
             protected set{}
         }
-        /*
-        //об'єки для збереження поточного елемента
-        protected ImageViewModel _selectedImage;
-        public ImageViewModel SelectedImage
+
+        private HeroModel _selectedHeroes;
+
+        public HeroModel SelectedHeroes
         {
-            get
-            {
-                return _selectedImage;
-            }
+            get { return _selectedHeroes; }
+
             set
             {
-                _selectedImage = value;
-                OnPropertyChanged("SelectedImage");
+                _selectedHeroes = value;
+                OnPropertyChanged("SelectedHeroes");
             }
-        }*/
+        }
         #endregion
 
         #region Command
