@@ -56,13 +56,21 @@
                       Margin="10"
                       CanContentScroll="True"
                       VerticalScrollBarVisibility="Auto">
-            <StackPanel Name="HeroesInfo"
-                        DataContext="{Binding SelectedHeroes,
-                                              Mode=TwoWay,
-                                              UpdateSourceTrigger=PropertyChanged}"
-                        Visibility="{Binding}">
+            <StackPanel Name="HeroesInfo" DataContext="{Binding SelectedHeroes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 
-                <Grid Name="statsGrid"
+                <!--  Hide stack panel when hero list count == 0  -->
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Visibility" Value="Visible" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=HeroList, Path=Items.Count}" Value="0">
+                                <Setter Property="Visibility" Value="Hidden" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+
+                <Grid Name="StatsGrid"
                       Height="280"
                       Margin="15,15,10,15"
                       Background="BlanchedAlmond">
