@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using DataRepository;
 using DBManager.Infrastructure;
@@ -14,14 +16,14 @@ namespace DBManager.ViewModel
     {
         #region Data
         //collection with elements from data base
-        IEnumerable<HeroModel> _heroes;
+        ObservableCollection<HeroModel> _heroes;
         public IEnumerable<HeroModel> Heroes 
         {
             get
             {
                 if (_heroes == null)
                 {
-                    _heroes = HeroesProvider.GetAll();
+                    _heroes = HeroesManager.GetAll();
                     _selectedHeroes = _heroes.First();   
                     OnPropertyChanged("Heroes");
                 }
@@ -34,7 +36,8 @@ namespace DBManager.ViewModel
 
         public HeroModel SelectedHeroes
         {
-            get { return _selectedHeroes; }
+            get
+            {   return _selectedHeroes; }
 
             set
             {
@@ -45,82 +48,252 @@ namespace DBManager.ViewModel
         #endregion
 
         #region Command
-        /*
-        #region NextImage
-        RelayCommand _nextImageCommand;
-        
-        public ICommand NextImage
+
+        #region ChooseImage
+        RelayCommand _chooseImageCommamd;
+
+        public ICommand ChooseImage
         {
             get
             {
-                if (_nextImageCommand == null)
+                if (_chooseImageCommamd == null)
                 {
-                    _nextImageCommand = new RelayCommand(ExecuteNextImageCommand, CanExecuteNextImageCommand);
+                    _chooseImageCommamd = new RelayCommand(ExecuteChooseImageCommand, CanExecuteChooseImageCommand);
                 }
-                return _nextImageCommand;
+                return _chooseImageCommamd;
             }
         }
 
-        public void ExecuteNextImageCommand(object parameter)
+        public void ExecuteChooseImageCommand(object parameter)
         {
-            if (SelectedImage.ImageId != Images.Count())
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+
+            // Set filter for file extension and default file extension 
+            dlg.DefaultExt = ".png";
+            dlg.Filter = "Image Files(*.BMP;*.JPG;*.GIF;*.PNG)|*.BMP;*.JPG;*.GIF;*.PNG";
+
+            // Display OpenFileDialog by calling ShowDialog method 
+            Nullable<bool> result = dlg.ShowDialog();
+
+            // Get the selected file name and display in a TextBox 
+            if (result == true)
             {
-                SelectedImage = Images.ElementAt(SelectedImage.ImageId);
-            }
-            else
-            {
-                SelectedImage = Images.First();
+                // Open document 
+                string filename = dlg.FileName;
+                SelectedHeroes.ImagePath = filename;
+                OnPropertyChanged("SelectedHeroes");
+                OnPropertyChanged("ImagePath");
             }
         }
 
-        public bool CanExecuteNextImageCommand(object parameter)
+        public bool CanExecuteChooseImageCommand(object parameter)
         {
-            if (Images != null)
-            {
-                return true;
-            }
-            else return false;
+            return true;
         }
         #endregion
 
-        #region PreviousImage
-        RelayCommand _prevImageCommand;
+        #region AddNewHero
+        RelayCommand _addNewHeroCommand;
 
-        public ICommand PrevImage
+        public ICommand AddNewHero
         {
             get
             {
-                if (_prevImageCommand == null)
+                if (_addNewHeroCommand == null)
                 {
-                    _prevImageCommand = new RelayCommand(ExecutePrevImageCommand, CanExecutePrevImageCommand);
+                    _addNewHeroCommand = new RelayCommand(ExecuteAddNewHehoCommand, CanExecuteAddNewHeroCommand);
                 }
-                return _prevImageCommand;
+                return _addNewHeroCommand;
             }
         }
 
-        public void ExecutePrevImageCommand(object parameter)
+        public void ExecuteAddNewHehoCommand(object parameter)
         {
-            if (SelectedImage.ImageId != 1)
+            HeroModel newModel = new HeroModel();
+
+            _heroes.Add(newModel);
+            SelectedHeroes = newModel;
+            OnPropertyChanged("Heroes");
+            OnPropertyChanged("SelectedHeroes");
+        }
+
+        public bool CanExecuteAddNewHeroCommand(object parameter)
+        {
+            return true;
+        }
+        #endregion
+
+        #region DeleteHero
+        RelayCommand _deleteHeroCommand;
+
+        public ICommand DeleteHero
+        {
+            get
             {
-                SelectedImage = Images.ElementAt(SelectedImage.ImageId - 2);
+                if (_deleteHeroCommand == null)
+                {
+                    _deleteHeroCommand = new RelayCommand(ExecuteDeleteCommand, CanExecuteDeleteCommand);
+                }
+                return _deleteHeroCommand;
             }
-            else
+        }
+
+        public void ExecuteDeleteCommand(object parameter)
+        {
+            if (_heroes.Count != 0)
             {
-                SelectedImage = Images.Last();
+                HeroesManager.DeleteHero(SelectedHeroes.Id);
+
+                int delIndex = 0;
+
+                foreach (var hero in _heroes)
+                {
+                    if (hero.Id == SelectedHeroes.Id)
+                    {
+                        delIndex = _heroes.IndexOf(hero);
+                    }
+                }
+
+                _heroes.RemoveAt(delIndex);
+
+                if (_heroes.Count != 0)
+                    SelectedHeroes = _heroes.First();
             }
+            OnPropertyChanged("Heroes");
+            OnPropertyChanged("SelectedHeroes");
+        }
+
+        public bool CanExecuteDeleteCommand(object parameter)
+        {
+            return true;
+        }
+        #endregion
+
+        #region SaveHero
+        RelayCommand _saveHeroCommand;
+
+        public ICommand SaveHero
+        {
+            get
+            {
+                if (_saveHeroCommand == null)
+                {
+                    _saveHeroCommand = new RelayCommand(ExecuteSaveHeroCommand, CanExecuteSaveHeroCommand);
+                }
+                return _saveHeroCommand;
+            }
+        }
+
+        public void ExecuteSaveHeroCommand(object parameter)
+        {
+            //if (_heroes.Count != 0)
+            //{
+            //    HeroesManager.DeleteHero(SelectedHeroes.Id);
+
+            //    int delIndex = 0;
+
+            //    foreach (var hero in _heroes)
+            //    {
+            //        if (hero.Id == SelectedHeroes.Id)
+            //        {
+            //            delIndex = _heroes.IndexOf(hero);
+            //        }
+            //    }
+
+            //    _heroes.RemoveAt(delIndex);
+
+            //    if (_heroes.Count != 0)
+            //        SelectedHeroes = _heroes.First();
+            //}
+
+            HeroesManager.ChangeHero(SelectedHeroes);
+            //OnPropertyChanged("Heroes");
+            //OnPropertyChanged("SelectedHeroes");
+        }
+
+        public bool CanExecuteSaveHeroCommand(object parameter)
+        {
+            return true;
+        }
+        #endregion
+
+        #region ClearHero
+        RelayCommand _clearHeroCommand;
+
+        public ICommand ClearHero
+        {
+            get
+            {
+                if (_clearHeroCommand == null)
+                {
+                    _clearHeroCommand = new RelayCommand(ExecuteClearHeroCommand, CanExecuteClearHeroCommand);
+                }
+                return _clearHeroCommand;
+            }
+        }
+
+        public void ExecuteClearHeroCommand(object parameter)
+        {
+            if (_heroes.Count != 0)
+            {
+                SelectedHeroes.Name = "Meme name.";
+                SelectedHeroes.Descriptions = "Meme descriptions.";
+                SelectedHeroes.ImagePath = "../Resources/imageNotFound.png";
+                SelectedHeroes.Stats = new StatsModel();
+            }
+
+            //OnPropertyChanged("Heroes");
+
+            //HeroesManager.ChangeHero(SelectedHeroes);
+            OnPropertyChanged("SelectedHeroes");
+        }
+
+        public bool CanExecuteClearHeroCommand(object parameter)
+        {
+            return true;
+        }
+        #endregion
+
+        #region ClearSkill
+        RelayCommand _clearSkillCommand;
+
+        public ICommand ClearSkill
+        {
+            get
+            {
+                if (_clearSkillCommand == null)
+                {
+                    _clearSkillCommand = new RelayCommand(ExecuteClearSkillCommand, CanExecuteClearSkillCommand);
+                }
+                return _clearSkillCommand;
+            }
+        }
+
+        public void ExecuteClearSkillCommand(object parameter)
+        {
             
+
+            if (_heroes.Count != 0)
+            {
+                SelectedHeroes.Skills[int.Parse(parameter.ToString())].Name = "Skill name.";
+                SelectedHeroes.Skills[int.Parse(parameter.ToString())].Descriptions = "Skill descriptions.";
+                SelectedHeroes.Skills[int.Parse(parameter.ToString())].ImagePath = "../Resources/imageNotFound.png";
+
+                SelectedHeroes.Skills[int.Parse(parameter.ToString())].Stats = new StatsModel();
+
+            }
+
+
+
+            OnPropertyChanged("SelectedHeroes");
         }
 
-        public bool CanExecutePrevImageCommand(object parameter)
+        public bool CanExecuteClearSkillCommand(object parameter)
         {
-            if (Images != null)
-            {
-                return true;
-            }
-            else return false;
+            return true;
         }
         #endregion
-        */
+        
         #endregion
 
         #region FreeData

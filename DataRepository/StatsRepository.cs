@@ -26,8 +26,6 @@ namespace DataRepository
 
         #endregion 
 
-
-
         public List<StatsDb> GetAll()
         {
             List<StatsDb> resoult = new List<StatsDb>();
@@ -107,6 +105,11 @@ namespace DataRepository
             {
                 throw new Exception("Not found stats with this id.");
             }
+        }
+
+        public bool Change(StatsDb newStats)
+        {
+            return false;
         }
     }
 }

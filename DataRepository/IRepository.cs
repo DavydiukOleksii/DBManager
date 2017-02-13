@@ -6,5 +6,6 @@ namespace DataRepository
     {
         List<T> GetAll();
         T GetById(int id);
+        bool Change(T newObject);
     }
 }

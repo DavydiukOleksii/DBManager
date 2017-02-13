@@ -105,5 +105,10 @@ namespace DataRepository
                 throw new Exception("Not found skills with this id.");
             }
         }
+
+        public bool Change(SkillDb newSkill)
+        {
+            return false;
+        }
     }
 }

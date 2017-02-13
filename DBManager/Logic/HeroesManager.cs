@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,11 +10,11 @@ using DataViewModels;
 
 namespace DBManager.Logic
 {
-    public static class HeroesProvider
+    public static class HeroesManager
     {
-        public static List<HeroModel> GetAll()
+        public static ObservableCollection<HeroModel> GetAll()
         {
-            List<HeroModel> resoultList = new List<HeroModel>();
+            ObservableCollection<HeroModel> resoultList = new ObservableCollection<HeroModel>();
 
             foreach (var hero in HeroesRepository.Instance.GetAll())
             {
@@ -58,6 +59,21 @@ namespace DBManager.Logic
             resoult.Skills.Add(new SkillModel(tmpSkill.Id, tmpSkill.Name, tmpSkill.Descriptions, tmpSkill.ImagePath, new StatsModel(tmpStat.Id, tmpStat.Attack, tmpStat.Armor, tmpStat.Armor, tmpStat.Miss)));
 
             return resoult;
+        }
+
+        public static bool SaveNewHero(HeroModel newHero)
+        {
+            return false;
+        }
+
+        public static bool ChangeHero(HeroModel changeHero)
+        {
+            return false;
+        }
+
+        public static void DeleteHero(int heroId)
+        {
+            
         }
     }
 }

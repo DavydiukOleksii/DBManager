@@ -107,5 +107,10 @@ namespace DataRepository
                 throw new Exception("Not found stats with this id.");
             }
         }
+
+        public bool Change(HeroDb hero)
+        {
+            return false;
+        }
     }
 }

@@ -23,11 +23,15 @@
         <ListBox Name="HeroList"
                  Grid.Column="0"
                  Margin="0,28,0,80"
-                 ItemsSource="{Binding Heroes}"
-                 SelectedItem="{Binding SelectedHeroes}">
+                 ItemsSource="{Binding Heroes,
+                                       Mode=OneWay,
+                                       UpdateSourceTrigger=PropertyChanged}"
+                 SelectedItem="{Binding SelectedHeroes,
+                                        Mode=TwoWay,
+                                        UpdateSourceTrigger=PropertyChanged}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Name}" />
+                    <TextBlock Text="{Binding Name, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
@@ -35,13 +39,15 @@
         <Button Grid.Column="0"
                 Height="30"
                 Margin="5"
-                VerticalAlignment="Bottom">
+                VerticalAlignment="Bottom"
+                Command="{Binding DeleteHero}">
             Delete Hero
         </Button>
         <Button Grid.Column="0"
                 Height="30"
                 Margin=" 5 45"
-                VerticalAlignment="Bottom">
+                VerticalAlignment="Bottom"
+                Command="{Binding AddNewHero}">
             Add new Hero
         </Button>
 
@@ -50,10 +56,14 @@
                       Margin="10"
                       CanContentScroll="True"
                       VerticalScrollBarVisibility="Auto">
-            <StackPanel Name="HeroesInfo" DataContext="{Binding SelectedHeroes}">
+            <StackPanel Name="HeroesInfo"
+                        DataContext="{Binding SelectedHeroes,
+                                              Mode=TwoWay,
+                                              UpdateSourceTrigger=PropertyChanged}"
+                        Visibility="{Binding}">
 
                 <Grid Name="statsGrid"
-                      Height="232"
+                      Height="280"
                       Margin="15,15,10,15"
                       Background="BlanchedAlmond">
                     <Grid.RowDefinitions>
@@ -63,26 +73,55 @@
                         <RowDefinition Height="1*" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2.5*" />
                         <ColumnDefinition Width="2*" />
                         <ColumnDefinition Width="2*" />
-                        <ColumnDefinition Width="2*" />
-                        <ColumnDefinition Width="1*" />
-                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="60px" />
+                        <ColumnDefinition Width="60px" />
                     </Grid.ColumnDefinitions>
 
                     <Image Grid.Row="0"
                            Grid.RowSpan="3"
                            Grid.Column="0"
                            Margin="5"
-                           Source="{Binding ImagePath}"
+                           Source="{Binding ImagePath,
+                                            UpdateSourceTrigger=PropertyChanged,
+                                            Mode=TwoWay}"
                            Stretch="Uniform" />
 
                     <TextBox Grid.Row="0"
                              Grid.Column="1"
-                             Margin="5 0 0 10"
+                             Margin="15 10"
                              VerticalAlignment="Bottom"
                              FontWeight="Bold"
                              Text="{Binding Name}" />
+
+                    <Grid Grid.Row="0" Grid.Column="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0"
+                                Height="25"
+                                Margin="10"
+                                VerticalAlignment="Bottom"
+                                Command="{Binding DataContext.SaveHero,
+                                                  RelativeSource={RelativeSource FindAncestor,
+                                                                                 AncestorType={x:Type Window}}}">
+                            Save
+                        </Button>
+                        <Button Grid.Column="1"
+                                Height="25"
+                                Margin="10"
+                                VerticalAlignment="Bottom"
+                                Command="{Binding DataContext.ClearHero,
+                                                  RelativeSource={RelativeSource FindAncestor,
+                                                                                 AncestorType={x:Type Window}}}">
+                            Clear
+                        </Button>
+
+                    </Grid>
 
                     <Image Grid.Row="0"
                            Grid.Column="3"
@@ -93,11 +132,13 @@
 
                     <TextBox Grid.Row="0"
                              Grid.Column="4"
-                             MinWidth="25"
+                             Width="35"
                              Margin="15"
                              HorizontalAlignment="Left"
+                             VerticalAlignment="Center"
                              Text="{Binding Stats.Attack}"
-                             TextAlignment="Right" />
+                             TextAlignment="Right"
+                             TextWrapping="NoWrap" />
 
                     <TextBlock Grid.Row="1"
                                Grid.RowSpan="3"
@@ -111,7 +152,10 @@
                              Grid.Column="1"
                              Grid.ColumnSpan="2"
                              Margin="20 25"
-                             Text="{Binding Descriptions}" />
+                             AcceptsReturn="True"
+                             Text="{Binding Descriptions}"
+                             TextWrapping="Wrap"
+                             VerticalScrollBarVisibility="Visible" />
 
                     <Image Grid.Row="1"
                            Grid.Column="3"
@@ -122,11 +166,13 @@
 
                     <TextBox Grid.Row="1"
                              Grid.Column="4"
-                             MinWidth="25"
+                             Width="35"
                              Margin="15"
                              HorizontalAlignment="Left"
+                             VerticalAlignment="Center"
                              Text="{Binding Stats.Health}"
-                             TextAlignment="Right" />
+                             TextAlignment="Right"
+                             TextWrapping="NoWrap" />
 
                     <Image Grid.Row="2"
                            Grid.Column="3"
@@ -137,18 +183,23 @@
 
                     <TextBox Grid.Row="2"
                              Grid.Column="4"
-                             MinWidth="25"
+                             Width="35"
                              Margin="15"
                              HorizontalAlignment="Left"
+                             VerticalAlignment="Center"
                              Text="{Binding Stats.Armor}"
-                             TextAlignment="Right" />
+                             TextAlignment="Right"
+                             TextWrapping="NoWrap" />
 
                     <Button Grid.Row="3"
                             Grid.Column="0"
                             MaxWidth="120"
                             MaxHeight="30"
                             Margin="10"
-                            VerticalAlignment="Top">
+                            VerticalAlignment="Top"
+                            Command="{Binding DataContext.ChooseImage,
+                                              RelativeSource={RelativeSource FindAncestor,
+                                                                             AncestorType={x:Type Window}}}">
                         Choose image
                     </Button>
 
@@ -161,85 +212,585 @@
 
                     <TextBox Grid.Row="3"
                              Grid.Column="4"
-                             MinWidth="25"
+                             Width="35"
                              Margin="15"
                              HorizontalAlignment="Left"
+                             VerticalAlignment="Center"
                              Text="{Binding Stats.Miss}"
-                             TextAlignment="Right" />
+                             TextAlignment="Right"
+                             TextWrapping="NoWrap" />
 
                 </Grid>
 
-                <Expander>
+                <Expander Name="Skill0" Background="Bisque">
                     <Expander.Header>
-                        <StackPanel Margin="5" Orientation="Horizontal">
+                        <StackPanel Margin="5"
+                                    Background="AliceBlue"
+                                    Orientation="Horizontal">
                             <Image MaxHeight="30"
                                    Margin="5"
-                                   Source="../Resources/attack.png" />
-                            <TextBlock Margin="5" Text="{Binding Skills[0].Name}" />
-                            <TextBlock Margin="5" Text="{Binding Skills[0].Descriptions}" />
+                                   Source="{Binding Skills[0].ImagePath}" />
+                            <TextBox Margin="5" Text="{Binding Skills[0].Name}" />
                         </StackPanel>
                     </Expander.Header>
 
-                    <StackPanel DataContext="{Binding Skills[0].Stats}" Orientation="Horizontal">
-                        <TextBlock Text="{Binding Armor}" />
-                        <TextBlock Text="{Binding Attack}" />
-                        <TextBlock Text="{Binding Health}" />
-                        <TextBlock Text="{Binding Miss}" />
-                    </StackPanel>
+                    <Grid Margin="50 0"
+                          Background="AliceBlue"
+                          DataContext="{Binding Skills[0]}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.4*" />
+                            <ColumnDefinition Width="40px" />
+                            <ColumnDefinition Width="60px" />
+                            <ColumnDefinition Width="0.7*" />
+                            <ColumnDefinition Width="0.7*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <Grid Column="0" Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+
+                            <Button MaxWidth="120" Margin="5 15">Change Image</Button>
+                            <Button Grid.Column="1" Margin="5 15">Save</Button>
+                            <Button Grid.Column="2"
+                                    Margin="5 15"
+                                    Command="{Binding DataContext.ClearSkill,
+                                                      RelativeSource={RelativeSource FindAncestor,
+                                                                                     AncestorType={x:Type Window}}}"
+                                    CommandParameter="0">
+                                Clear
+                            </Button>
+
+                        </Grid>
+
+                        <Image Grid.Row="0"
+                               Grid.Column="1"
+                               Margin="5"
+                               HorizontalAlignment="Right"
+                               Source="../Resources/attack.png"
+                               Stretch="Uniform" />
+
+                        <TextBox Grid.Row="0"
+                                 Grid.Column="2"
+                                 Width="35"
+                                 Margin="15"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding Stats.Attack}"
+                                 TextAlignment="Right"
+                                 TextWrapping="NoWrap" />
+
+                        <TextBlock Grid.Row="1"
+                                   Grid.RowSpan="3"
+                                   Grid.Column="0"
+                                   Width="150"
+                                   Height="25"
+                                   Margin="5"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Top"
+                                   TextAlignment="Left">
+                            Descriptions:
+                        </TextBlock>
+
+                        <TextBox Grid.Row="1"
+                                 Grid.RowSpan="3"
+                                 Grid.Column="0"
+                                 MinWidth="150"
+                                 MaxHeight="175"
+                                 Margin="20 35"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Top"
+                                 AcceptsReturn="True"
+                                 Text="{Binding Descriptions}"
+                                 TextWrapping="Wrap"
+                                 VerticalScrollBarVisibility="Visible" />
+
+                        <Image Grid.Row="1"
+                               Grid.Column="1"
+                               Margin="5"
+                               HorizontalAlignment="Right"
+                               Source="../Resources/hearth.png"
+                               Stretch="Uniform" />
+
+                        <TextBox Grid.Row="1"
+                                 Grid.Column="2"
+                                 Width="35"
+                                 Margin="15"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding Stats.Health}"
+                                 TextAlignment="Right"
+                                 TextWrapping="NoWrap" />
+
+                        <Image Grid.Row="2"
+                               Grid.Column="1"
+                               Margin="5"
+                               HorizontalAlignment="Right"
+                               Source="../Resources/shield.png"
+                               Stretch="Uniform" />
+
+                        <TextBox Grid.Row="2"
+                                 Grid.Column="2"
+                                 Width="35"
+                                 Margin="15"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding Stats.Armor}"
+                                 TextAlignment="Right"
+                                 TextWrapping="NoWrap" />
+
+                        <Image Grid.Row="3"
+                               Grid.Column="1"
+                               Margin="5"
+                               HorizontalAlignment="Right"
+                               Source="../Resources/dodge.png"
+                               Stretch="Uniform" />
+
+                        <TextBox Grid.Row="3"
+                                 Grid.Column="2"
+                                 Width="35"
+                                 Margin="15"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding Stats.Miss}"
+                                 TextAlignment="Right"
+                                 TextWrapping="NoWrap" />
+                    </Grid>
                 </Expander>
 
-                <Expander>
+                <Expander Name="Skill1" Background="Bisque">
                     <Expander.Header>
-                        <StackPanel Margin="5" Orientation="Horizontal">
+                        <StackPanel Margin="5"
+                                    Background="AliceBlue"
+                                    Orientation="Horizontal">
                             <Image MaxHeight="30"
                                    Margin="5"
                                    Source="../Resources/attack.png" />
-                            <TextBlock Margin="5" Text="{Binding Skills[1].Name}" />
-                            <TextBlock Margin="5" Text="{Binding Skills[1].Descriptions}" />
+                            <TextBox Margin="5" Text="{Binding Skills[1].Name}" />
                         </StackPanel>
                     </Expander.Header>
-                    <StackPanel DataContext="{Binding Skills[1].Stats}">
-                        <TextBlock Text="{Binding Armor}" />
-                        <TextBlock Text="{Binding Attack}" />
-                        <TextBlock Text="{Binding Health}" />
-                        <TextBlock Text="{Binding Miss}" />
-                    </StackPanel>
+
+                    <Grid Margin="50 0"
+                          Background="AliceBlue"
+                          DataContext="{Binding Skills[1]}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.4*" />
+                            <ColumnDefinition Width="40px" />
+                            <ColumnDefinition Width="60px" />
+                            <ColumnDefinition Width="0.7*" />
+                            <ColumnDefinition Width="0.7*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <Grid Column="0" Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+
+                            <Button MaxWidth="120" Margin="5 15">Change Image</Button>
+                            <Button Grid.Column="1" Margin="5 15">Save</Button>
+                            <Button Grid.Column="2"
+                                    Margin="5 15"
+                                    Command="{Binding DataContext.ClearSkill,
+                                                      RelativeSource={RelativeSource FindAncestor,
+                                                                                     AncestorType={x:Type Window}}}"
+                                    CommandParameter="1">
+                                Clear
+                            </Button>
+
+                        </Grid>
+
+                        <Image Grid.Row="0"
+                               Grid.Column="1"
+                               Margin="5"
+                               HorizontalAlignment="Right"
+                               Source="../Resources/attack.png"
+                               Stretch="Uniform" />
+
+                        <TextBox Grid.Row="0"
+                                 Grid.Column="2"
+                                 Width="35"
+                                 Margin="15"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding Stats.Attack}"
+                                 TextAlignment="Right"
+                                 TextWrapping="NoWrap" />
+
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="0"
+                                   Width="150"
+                                   Height="25"
+                                   Margin="5"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Top"
+                                   TextAlignment="Left">
+                            Descriptions:
+                        </TextBlock>
+
+                        <TextBox Grid.Row="1"
+                                 Grid.RowSpan="3"
+                                 Grid.Column="0"
+                                 MaxHeight="175"
+                                 Margin="20 35"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Top"
+                                 AcceptsReturn="True"
+                                 Text="{Binding Descriptions}"
+                                 TextWrapping="Wrap"
+                                 VerticalScrollBarVisibility="Visible" />
+
+                        <Image Grid.Row="1"
+                               Grid.Column="1"
+                               Margin="5"
+                               HorizontalAlignment="Right"
+                               Source="../Resources/hearth.png"
+                               Stretch="Uniform" />
+
+                        <TextBox Grid.Row="1"
+                                 Grid.Column="2"
+                                 Width="35"
+                                 Margin="15"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding Stats.Health}"
+                                 TextAlignment="Right"
+                                 TextWrapping="NoWrap" />
+
+                        <Image Grid.Row="2"
+                               Grid.Column="1"
+                               Margin="5"
+                               HorizontalAlignment="Right"
+                               Source="../Resources/shield.png"
+                               Stretch="Uniform" />
+
+                        <TextBox Grid.Row="2"
+                                 Grid.Column="2"
+                                 Width="35"
+                                 Margin="15"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding Stats.Armor}"
+                                 TextAlignment="Right"
+                                 TextWrapping="NoWrap" />
+
+                        <Image Grid.Row="3"
+                               Grid.Column="1"
+                               Margin="5"
+                               HorizontalAlignment="Right"
+                               Source="../Resources/dodge.png"
+                               Stretch="Uniform" />
+
+                        <TextBox Grid.Row="3"
+                                 Grid.Column="2"
+                                 Width="35"
+                                 Margin="15"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding Stats.Miss}"
+                                 TextAlignment="Right"
+                                 TextWrapping="NoWrap" />
+                    </Grid>
                 </Expander>
 
-                <Expander>
+                <Expander Name="Skill2" Background="Bisque">
                     <Expander.Header>
-                        <StackPanel Margin="5" Orientation="Horizontal">
+                        <StackPanel Margin="5"
+                                    Background="AliceBlue"
+                                    Orientation="Horizontal">
                             <Image MaxHeight="30"
                                    Margin="5"
                                    Source="../Resources/attack.png" />
-                            <TextBlock Margin="5" Text="{Binding Skills[2].Name}" />
-                            <TextBlock Margin="5" Text="{Binding Skills[2].Descriptions}" />
+                            <TextBox Margin="5" Text="{Binding Skills[2].Name}" />
                         </StackPanel>
                     </Expander.Header>
-                    <StackPanel DataContext="{Binding Skills[2].Stats}">
-                        <TextBlock Text="{Binding Armor}" />
-                        <TextBlock Text="{Binding Attack}" />
-                        <TextBlock Text="{Binding Health}" />
-                        <TextBlock Text="{Binding Miss}" />
-                    </StackPanel>
+
+                    <Grid Margin="50 0"
+                          Background="AliceBlue"
+                          DataContext="{Binding Skills[2]}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.4*" />
+                            <ColumnDefinition Width="40px" />
+                            <ColumnDefinition Width="60px" />
+                            <ColumnDefinition Width="0.7*" />
+                            <ColumnDefinition Width="0.7*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <Grid Column="0" Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+
+                            <Button MaxWidth="120" Margin="5 15">Change Image</Button>
+                            <Button Grid.Column="1" Margin="5 15">Save</Button>
+                            <Button Grid.Column="2"
+                                    Margin="5 15"
+                                    Command="{Binding DataContext.ClearSkill,
+                                                      RelativeSource={RelativeSource FindAncestor,
+                                                                                     AncestorType={x:Type Window}}}"
+                                    CommandParameter="2">
+                                Clear
+                            </Button>
+
+                        </Grid>
+
+                        <Image Grid.Row="0"
+                               Grid.Column="1"
+                               Margin="5"
+                               HorizontalAlignment="Right"
+                               Source="../Resources/attack.png"
+                               Stretch="Uniform" />
+
+                        <TextBox Grid.Row="0"
+                                 Grid.Column="2"
+                                 Width="35"
+                                 Margin="15"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding Stats.Attack}"
+                                 TextAlignment="Right"
+                                 TextWrapping="NoWrap" />
+
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="0"
+                                   Width="150"
+                                   Height="25"
+                                   Margin="5"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Top"
+                                   TextAlignment="Left">
+                            Descriptions:
+                        </TextBlock>
+
+                        <TextBox Grid.Row="1"
+                                 Grid.RowSpan="3"
+                                 Grid.Column="0"
+                                 MaxHeight="175"
+                                 Margin="20 35"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Top"
+                                 AcceptsReturn="True"
+                                 Text="{Binding Descriptions}"
+                                 TextWrapping="Wrap"
+                                 VerticalScrollBarVisibility="Visible" />
+
+                        <Image Grid.Row="1"
+                               Grid.Column="1"
+                               Margin="5"
+                               HorizontalAlignment="Right"
+                               Source="../Resources/hearth.png"
+                               Stretch="Uniform" />
+
+                        <TextBox Grid.Row="1"
+                                 Grid.Column="2"
+                                 Width="35"
+                                 Margin="15"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding Stats.Health}"
+                                 TextAlignment="Right"
+                                 TextWrapping="NoWrap" />
+
+                        <Image Grid.Row="2"
+                               Grid.Column="1"
+                               Margin="5"
+                               HorizontalAlignment="Right"
+                               Source="../Resources/shield.png"
+                               Stretch="Uniform" />
+
+                        <TextBox Grid.Row="2"
+                                 Grid.Column="2"
+                                 Width="35"
+                                 Margin="15"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding Stats.Armor}"
+                                 TextAlignment="Right"
+                                 TextWrapping="NoWrap" />
+
+                        <Image Grid.Row="3"
+                               Grid.Column="1"
+                               Margin="5"
+                               HorizontalAlignment="Right"
+                               Source="../Resources/dodge.png"
+                               Stretch="Uniform" />
+
+                        <TextBox Grid.Row="3"
+                                 Grid.Column="2"
+                                 Width="35"
+                                 Margin="15"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding Stats.Miss}"
+                                 TextAlignment="Right"
+                                 TextWrapping="NoWrap" />
+                    </Grid>
+
                 </Expander>
 
-                <Expander>
+                <Expander Name="Skill3" Background="Bisque">
                     <Expander.Header>
-                        <StackPanel Margin="5" Orientation="Horizontal">
+                        <StackPanel Margin="5"
+                                    Background="AliceBlue"
+                                    Orientation="Horizontal">
                             <Image MaxHeight="30"
                                    Margin="5"
                                    Source="../Resources/attack.png" />
-                            <TextBlock Margin="5" Text="{Binding Skills[3].Name}" />
-                            <TextBlock Margin="5" Text="{Binding Skills[3].Descriptions}" />
+                            <TextBox Margin="5" Text="{Binding Skills[3].Name}" />
                         </StackPanel>
                     </Expander.Header>
-                    <StackPanel DataContext="{Binding Skills[3].Stats}">
-                        <TextBlock Text="{Binding Armor}" />
-                        <TextBlock Text="{Binding Attack}" />
-                        <TextBlock Text="{Binding Health}" />
-                        <TextBlock Text="{Binding Miss}" />
-                    </StackPanel>
+
+                    <Grid Margin="50 0"
+                          Background="AliceBlue"
+                          DataContext="{Binding Skills[3]}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.4*" />
+                            <ColumnDefinition Width="40px" />
+                            <ColumnDefinition Width="60px" />
+                            <ColumnDefinition Width="0.7*" />
+                            <ColumnDefinition Width="0.7*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <Grid Column="0" Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+
+                            <Button MaxWidth="120" Margin="5 15">Change Image</Button>
+                            <Button Grid.Column="1" Margin="5 15">Save</Button>
+                            <Button Grid.Column="2"
+                                    Margin="5 15"
+                                    Command="{Binding DataContext.ClearSkill,
+                                                      RelativeSource={RelativeSource FindAncestor,
+                                                                                     AncestorType={x:Type Window}}}"
+                                    CommandParameter="3">
+                                Clear
+                            </Button>
+
+                        </Grid>
+
+                        <Image Grid.Row="0"
+                               Grid.Column="1"
+                               Margin="5"
+                               HorizontalAlignment="Right"
+                               Source="../Resources/attack.png"
+                               Stretch="Uniform" />
+
+                        <TextBox Grid.Row="0"
+                                 Grid.Column="2"
+                                 Width="35"
+                                 Margin="15"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding Stats.Attack}"
+                                 TextAlignment="Right"
+                                 TextWrapping="NoWrap" />
+
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="0"
+                                   Width="150"
+                                   Height="25"
+                                   Margin="5"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Top"
+                                   TextAlignment="Left">
+                            Descriptions:
+                        </TextBlock>
+
+                        <TextBox Grid.Row="1"
+                                 Grid.RowSpan="3"
+                                 Grid.Column="0"
+                                 MaxHeight="175"
+                                 Margin="20 35"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Top"
+                                 AcceptsReturn="True"
+                                 Text="{Binding Descriptions}"
+                                 TextWrapping="Wrap"
+                                 VerticalScrollBarVisibility="Visible" />
+
+                        <Image Grid.Row="1"
+                               Grid.Column="1"
+                               Margin="5"
+                               HorizontalAlignment="Right"
+                               Source="../Resources/hearth.png"
+                               Stretch="Uniform" />
+
+                        <TextBox Grid.Row="1"
+                                 Grid.Column="2"
+                                 Width="35"
+                                 Margin="15"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding Stats.Health}"
+                                 TextAlignment="Right"
+                                 TextWrapping="NoWrap" />
+
+                        <Image Grid.Row="2"
+                               Grid.Column="1"
+                               Margin="5"
+                               HorizontalAlignment="Right"
+                               Source="../Resources/shield.png"
+                               Stretch="Uniform" />
+
+                        <TextBox Grid.Row="2"
+                                 Grid.Column="2"
+                                 Width="35"
+                                 Margin="15"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding Stats.Armor}"
+                                 TextAlignment="Right"
+                                 TextWrapping="NoWrap" />
+
+                        <Image Grid.Row="3"
+                               Grid.Column="1"
+                               Margin="5"
+                               HorizontalAlignment="Right"
+                               Source="../Resources/dodge.png"
+                               Stretch="Uniform" />
+
+                        <TextBox Grid.Row="3"
+                                 Grid.Column="2"
+                                 Width="35"
+                                 Margin="15"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding Stats.Miss}"
+                                 TextAlignment="Right"
+                                 TextWrapping="NoWrap" />
+                    </Grid>
                 </Expander>
 
             </StackPanel>

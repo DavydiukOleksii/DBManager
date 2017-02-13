@@ -3,21 +3,87 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DBManager.ViewModel;
 
 namespace DBManager.Model
 {
-    public class HeroModel
+    public class HeroModel: ViewModelBase
     {
-        public int Id { get; set; }
+        private int _id;
+        public int Id
+        {
+            get { return _id; }
+            set
+            {
+                _id = value;
+                OnPropertyChanged("Id");
+            }
+        }
 
-        public string Name { get; set; }
-        public string Descriptions { get; set; }
-        public string ImagePath { get; set; }
+        private string _name;
+        public string Name {
+            get { return _name; }
+            set
+            {
+                _name = value;
+                OnPropertyChanged("Name");
+            }
+        }
 
-        public StatsModel Stats { get; set; }
-        public List<SkillModel> Skills { get; set; }
+        private string _descriptions;
+        public string Descriptions
+        {
+            get { return _descriptions; }
+            set
+            {
+                _descriptions = value;
+                OnPropertyChanged("Descriptions");
+            }
+        }
 
-        public HeroModel() { }
+        private string _imagePath;
+        public string ImagePath 
+        { 
+            get{return _imagePath;}
+            set { _imagePath = value; OnPropertyChanged("ImagePath"); }
+        }
+
+        private StatsModel _stats;
+        public StatsModel Stats
+        {
+            get { return _stats; }
+            set
+            {
+                _stats = value;
+                OnPropertyChanged("Stats");
+            }
+        }
+
+        private List<SkillModel> _skills; 
+        public List<SkillModel> Skills {
+            get { return _skills; }
+            set
+            {
+                _skills = value;
+                OnPropertyChanged("Skills");
+            }
+        }
+
+        public HeroModel()
+        {
+            Name = "Meme name";
+            Descriptions = "Meme descriptions.";
+            ImagePath = "../Resources/imageNotFound.png";
+
+            Stats = new StatsModel();
+
+            Skills = new List<SkillModel>();
+
+            Skills.Add(new SkillModel());
+            Skills.Add(new SkillModel());
+            Skills.Add(new SkillModel());
+            Skills.Add(new SkillModel());
+        }
 
         public HeroModel(int id, string name, string descriptions, string imagePath)
         {
