@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DBManager.Model;
 using DataRepository;
 using DataViewModels;
+using DBManager.Model;
 
 namespace DBManager.Logic
 {
@@ -61,9 +57,63 @@ namespace DBManager.Logic
             return resoult;
         }
 
-        public static bool SaveNewHero(HeroModel newHero)
+        public static List<int> AddNewHero(HeroModel newHero)
         {
-            return false;
+            List<int> idList = new List<int>();
+
+            HeroDb tmpHero = new HeroDb();
+            tmpHero.Name = newHero.Name;
+            tmpHero.Descriptions = newHero.Descriptions;
+            tmpHero.ImagePath = newHero.ImagePath;
+
+            List<SkillDb> tmpSkillsList = new List<SkillDb>();
+
+            for (int i = 0; i < newHero.Skills.Count; i++)
+            {
+                SkillDb tmpSkillDb = new SkillDb();
+
+                StatsDb tmpStatsDb = new StatsDb();
+                tmpStatsDb.Armor = newHero.Skills[i].Stats.Armor;
+                tmpStatsDb.Attack = newHero.Skills[i].Stats.Attack;
+                tmpStatsDb.Health = newHero.Skills[i].Stats.Health;
+                tmpStatsDb.Miss = newHero.Skills[i].Stats.Miss;
+
+                tmpSkillDb.StatId = StatsRepository.Instance.Insert(tmpStatsDb);
+
+                tmpSkillDb.Name = newHero.Skills[i].Name;
+                tmpSkillDb.Descriptions = newHero.Skills[i].Descriptions;
+                tmpSkillDb.ImagePath = newHero.Skills[i].ImagePath;
+
+                tmpSkillsList.Add(tmpSkillDb);
+
+                idList.Add(tmpSkillDb.StatId);
+            }
+
+            tmpHero.Skill1Id = SkillsRepository.Instance.Insert(tmpSkillsList[0]);
+            tmpHero.Skill2Id = SkillsRepository.Instance.Insert(tmpSkillsList[1]);
+            tmpHero.Skill3Id = SkillsRepository.Instance.Insert(tmpSkillsList[2]);
+            tmpHero.Skill4Id = SkillsRepository.Instance.Insert(tmpSkillsList[3]);
+
+            StatsDb tmpHeroStat = new StatsDb();
+            tmpHeroStat.Armor = newHero.Stats.Armor;
+            tmpHeroStat.Attack = newHero.Stats.Attack;
+            tmpHeroStat.Health = newHero.Stats.Health;
+            tmpHeroStat.Miss = newHero.Stats.Miss;
+
+            tmpHero.StatsId = StatsRepository.Instance.Insert(tmpHeroStat);
+            tmpHero.Id = HeroesRepository.Instance.Insert(tmpHero);
+
+            idList.AddRange(new int[] 
+                { 
+                    tmpHero.Id,
+                    tmpHero.StatsId,
+                    tmpHero.Skill1Id,
+                    tmpHero.Skill2Id,
+                    tmpHero.Skill3Id,
+                    tmpHero.Skill4Id
+                });
+
+            return idList;
         }
 
         public static bool ChangeHero(HeroModel changeHero)
@@ -71,9 +121,17 @@ namespace DBManager.Logic
             return false;
         }
 
-        public static void DeleteHero(int heroId)
+        public static void DeleteHero(HeroModel delHero)
         {
-            
+            StatsRepository.Instance.Delete(delHero.Stats.Id);
+
+            for (int i = 0; i < delHero.Skills.Count; i++)
+            {
+                StatsRepository.Instance.Delete(delHero.Skills[i].Stats.Id);
+                SkillsRepository.Instance.Delete(delHero.Skills[i].Id);
+            }
+
+            HeroesRepository.Instance.Delete(delHero.Id);
         }
     }
 }

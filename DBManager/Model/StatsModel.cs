@@ -72,6 +72,16 @@ namespace DBManager.Model
             Miss = 25;
         }
 
+        public StatsModel(int id)
+        {
+            Id = id;
+
+            Armor = 1;
+            Attack = 1;
+            Health = 1;
+            Miss = 25;
+        }
+
         public StatsModel(int id, int attack, int armor, int health, int miss)
         {
             Id = id;

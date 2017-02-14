@@ -49,7 +49,7 @@ namespace DBManager.ViewModel
 
         #region Command
 
-        #region ChooseImage
+        #region ChooseHeroImage
         RelayCommand _chooseImageCommamd;
 
         public ICommand ChooseImage
@@ -110,9 +110,24 @@ namespace DBManager.ViewModel
         public void ExecuteAddNewHehoCommand(object parameter)
         {
             HeroModel newModel = new HeroModel();
+            List<int> idList = HeroesManager.AddNewHero(newModel);
+
+            //change id from db
+
+            for (int i = 0; i < newModel.Skills.Count; i++)
+            {
+                newModel.Skills[i].Stats.Id = idList[i];
+            }
+            newModel.Stats.Id = idList[5];
+            newModel.Id = idList[4];
+            for (int i = 0; i < newModel.Skills.Count; i++)
+            {
+                newModel.Skills[i].Id = idList[i + 6];
+            }
 
             _heroes.Add(newModel);
             SelectedHeroes = newModel;
+
             OnPropertyChanged("Heroes");
             OnPropertyChanged("SelectedHeroes");
         }
@@ -142,7 +157,7 @@ namespace DBManager.ViewModel
         {
             if (_heroes.Count != 0)
             {
-                HeroesManager.DeleteHero(SelectedHeroes.Id);
+                HeroesManager.DeleteHero(SelectedHeroes);
 
                 int delIndex = 0;
 
@@ -239,7 +254,7 @@ namespace DBManager.ViewModel
                 SelectedHeroes.Name = "Meme name.";
                 SelectedHeroes.Descriptions = "Meme descriptions.";
                 SelectedHeroes.ImagePath = "../Resources/imageNotFound.png";
-                SelectedHeroes.Stats = new StatsModel();
+                SelectedHeroes.Stats = new StatsModel(SelectedHeroes.Stats.Id);
             }
 
             //OnPropertyChanged("Heroes");
@@ -279,7 +294,7 @@ namespace DBManager.ViewModel
                 SelectedHeroes.Skills[int.Parse(parameter.ToString())].Descriptions = "Skill descriptions.";
                 SelectedHeroes.Skills[int.Parse(parameter.ToString())].ImagePath = "../Resources/imageNotFound.png";
 
-                SelectedHeroes.Skills[int.Parse(parameter.ToString())].Stats = new StatsModel();
+                SelectedHeroes.Skills[int.Parse(parameter.ToString())].Stats = new StatsModel(SelectedHeroes.Skills[int.Parse(parameter.ToString())].Stats.Id);
 
             }
 
@@ -289,6 +304,49 @@ namespace DBManager.ViewModel
         }
 
         public bool CanExecuteClearSkillCommand(object parameter)
+        {
+            return true;
+        }
+        #endregion
+
+        #region ChooseSkillImage
+        RelayCommand _chooseSkillImageCommamd;
+
+        public ICommand ChooseSkillImage
+        {
+            get
+            {
+                if (_chooseSkillImageCommamd == null)
+                {
+                    _chooseSkillImageCommamd = new RelayCommand(ExecuteChooseSkillImageCommand, CanExecuteChooseSkillImageCommand);
+                }
+                return _chooseSkillImageCommamd;
+            }
+        }
+
+        public void ExecuteChooseSkillImageCommand(object parameter)
+        {
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+
+            // Set filter for file extension and default file extension 
+            dlg.DefaultExt = ".png";
+            dlg.Filter = "Image Files(*.BMP;*.JPG;*.GIF;*.PNG)|*.BMP;*.JPG;*.GIF;*.PNG";
+
+            // Display OpenFileDialog by calling ShowDialog method 
+            Nullable<bool> result = dlg.ShowDialog();
+
+            // Get the selected file name and display in a TextBox 
+            if (result == true)
+            {
+                // Open document 
+                string filename = dlg.FileName;
+                SelectedHeroes.Skills[int.Parse(parameter.ToString())].ImagePath = filename;
+                OnPropertyChanged("SelectedHeroes");
+                OnPropertyChanged("ImagePath");
+            }
+        }
+
+        public bool CanExecuteChooseSkillImageCommand(object parameter)
         {
             return true;
         }

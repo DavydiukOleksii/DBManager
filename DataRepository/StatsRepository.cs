@@ -107,9 +107,83 @@ namespace DataRepository
             }
         }
 
-        public bool Change(StatsDb newStats)
+        public bool Update(StatsDb newStats)
         {
-            return false;
+            try
+            {
+                using (SQLiteConnection conn =
+                    new SQLiteConnection(@"Data Source=D:\Projects\DBManager\DataRepository\bin\Debug\MemesDB.db"))
+                {
+                    conn.Open();
+
+                    using (SQLiteCommand com = new SQLiteCommand(conn))
+                    {
+                        com.CommandText = "UPDATE Stats SET Attack=" + newStats.Attack + ", Armor=" + newStats.Armor + ", Health=" + newStats.Health + ", Miss=" + newStats.Miss + " WHERE id=" + newStats.Id;
+                        com.ExecuteNonQuery();
+                    }
+
+                    conn.Close();
+                }
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public bool Delete(int id)
+        {
+            try
+            {
+                using (SQLiteConnection conn =
+                    new SQLiteConnection(@"Data Source=D:\Projects\DBManager\DataRepository\bin\Debug\MemesDB.db"))
+                {
+                    conn.Open();
+
+                    using (SQLiteCommand com = new SQLiteCommand(conn))
+                    {
+                        com.CommandText = "DELETE FROM Stats WHERE id=" + id;
+                        com.ExecuteNonQuery();
+                    }
+
+                    conn.Close();
+                }
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public int Insert(StatsDb newStats)
+        {
+            int id = 0;
+            using (SQLiteConnection conn =
+                new SQLiteConnection(@"Data Source=D:\Projects\DBManager\DataRepository\bin\Debug\MemesDB.db"))
+            {
+                conn.Open();
+
+                using (SQLiteCommand com = new SQLiteCommand(conn))
+                {
+                    com.CommandText = "INSERT INTO Stats (Attack, Health, Armor, Miss) VALUES('" + newStats.Attack + "', '" + newStats.Health + "', '" + newStats.Armor + "', '" + newStats.Miss + "')";
+                    com.ExecuteNonQuery();
+
+                    com.CommandText = "SELECT last_insert_rowid()";
+
+                    using (SQLiteDataReader reader = com.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            id = reader.GetInt32(0);
+                        }
+                    }
+                }
+
+                conn.Close();
+            }
+            return id;
         }
     }
 }

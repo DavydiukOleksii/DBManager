@@ -266,8 +266,17 @@
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
 
-                            <Button MaxWidth="120" Margin="5 15">Change Image</Button>
+                            <Button MaxWidth="120"
+                                    Margin="5 15"
+                                    Command="{Binding DataContext.ChooseSkillImage,
+                                                      RelativeSource={RelativeSource FindAncestor,
+                                                                                     AncestorType={x:Type Window}}}"
+                                    CommandParameter="0">
+                                Update Image
+                            </Button>
+
                             <Button Grid.Column="1" Margin="5 15">Save</Button>
+
                             <Button Grid.Column="2"
                                     Margin="5 15"
                                     Command="{Binding DataContext.ClearSkill,
@@ -381,7 +390,7 @@
                                     Orientation="Horizontal">
                             <Image MaxHeight="30"
                                    Margin="5"
-                                   Source="../Resources/attack.png" />
+                                   Source="{Binding Skills[1].ImagePath}" />
                             <TextBox Margin="5" Text="{Binding Skills[1].Name}" />
                         </StackPanel>
                     </Expander.Header>
@@ -410,7 +419,14 @@
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
 
-                            <Button MaxWidth="120" Margin="5 15">Change Image</Button>
+                            <Button MaxWidth="120"
+                                    Margin="5 15"
+                                    Command="{Binding DataContext.ChooseSkillImage,
+                                                      RelativeSource={RelativeSource FindAncestor,
+                                                                                     AncestorType={x:Type Window}}}"
+                                    CommandParameter="1">
+                                Update Image
+                            </Button>
                             <Button Grid.Column="1" Margin="5 15">Save</Button>
                             <Button Grid.Column="2"
                                     Margin="5 15"
@@ -523,7 +539,7 @@
                                     Orientation="Horizontal">
                             <Image MaxHeight="30"
                                    Margin="5"
-                                   Source="../Resources/attack.png" />
+                                   Source="{Binding Skills[2].ImagePath}" />
                             <TextBox Margin="5" Text="{Binding Skills[2].Name}" />
                         </StackPanel>
                     </Expander.Header>
@@ -552,7 +568,14 @@
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
 
-                            <Button MaxWidth="120" Margin="5 15">Change Image</Button>
+                            <Button MaxWidth="120"
+                                    Margin="5 15"
+                                    Command="{Binding DataContext.ChooseSkillImage,
+                                                      RelativeSource={RelativeSource FindAncestor,
+                                                                                     AncestorType={x:Type Window}}}"
+                                    CommandParameter="2">
+                                Update Image
+                            </Button>
                             <Button Grid.Column="1" Margin="5 15">Save</Button>
                             <Button Grid.Column="2"
                                     Margin="5 15"
@@ -666,7 +689,7 @@
                                     Orientation="Horizontal">
                             <Image MaxHeight="30"
                                    Margin="5"
-                                   Source="../Resources/attack.png" />
+                                   Source="{Binding Skills[3].ImagePath}" />
                             <TextBox Margin="5" Text="{Binding Skills[3].Name}" />
                         </StackPanel>
                     </Expander.Header>
@@ -695,7 +718,14 @@
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
 
-                            <Button MaxWidth="120" Margin="5 15">Change Image</Button>
+                            <Button MaxWidth="120"
+                                    Margin="5 15"
+                                    Command="{Binding DataContext.ChooseSkillImage,
+                                                      RelativeSource={RelativeSource FindAncestor,
+                                                                                     AncestorType={x:Type Window}}}"
+                                    CommandParameter="3">
+                                Update Image
+                            </Button>
                             <Button Grid.Column="1" Margin="5 15">Save</Button>
                             <Button Grid.Column="2"
                                     Margin="5 15"
