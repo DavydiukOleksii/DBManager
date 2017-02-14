@@ -118,7 +118,7 @@ namespace DataRepository
 
                     using (SQLiteCommand com = new SQLiteCommand(conn))
                     {
-                        com.CommandText = "UPDATE Stats SET Attack=" + newStats.Attack + ", Armor=" + newStats.Armor + ", Health=" + newStats.Health + ", Miss=" + newStats.Miss + " WHERE id=" + newStats.Id;
+                        com.CommandText = "UPDATE Stats SET Attack='" + newStats.Attack + "', Armor='" + newStats.Armor + "', Health='" + newStats.Health + "', Miss='" + newStats.Miss + "' WHERE id=" + newStats.Id;
                         com.ExecuteNonQuery();
                     }
 

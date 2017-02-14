@@ -201,29 +201,9 @@ namespace DBManager.ViewModel
 
         public void ExecuteSaveHeroCommand(object parameter)
         {
-            //if (_heroes.Count != 0)
-            //{
-            //    HeroesManager.DeleteHero(SelectedHeroes.Id);
-
-            //    int delIndex = 0;
-
-            //    foreach (var hero in _heroes)
-            //    {
-            //        if (hero.Id == SelectedHeroes.Id)
-            //        {
-            //            delIndex = _heroes.IndexOf(hero);
-            //        }
-            //    }
-
-            //    _heroes.RemoveAt(delIndex);
-
-            //    if (_heroes.Count != 0)
-            //        SelectedHeroes = _heroes.First();
-            //}
-
             HeroesManager.ChangeHero(SelectedHeroes);
-            //OnPropertyChanged("Heroes");
-            //OnPropertyChanged("SelectedHeroes");
+            OnPropertyChanged("Heroes");
+            OnPropertyChanged("SelectedHeroes");
         }
 
         public bool CanExecuteSaveHeroCommand(object parameter)
@@ -304,6 +284,34 @@ namespace DBManager.ViewModel
         }
 
         public bool CanExecuteClearSkillCommand(object parameter)
+        {
+            return true;
+        }
+        #endregion
+
+        #region SaveSkill
+        RelayCommand _saveSkillCommand;
+
+        public ICommand SaveSkill
+        {
+            get
+            {
+                if (_saveSkillCommand == null)
+                {
+                    _saveSkillCommand = new RelayCommand(ExecuteSaveSkillCommand, CanExecuteSaveSkillCommand);
+                }
+                return _saveSkillCommand;
+            }
+        }
+
+        public void ExecuteSaveSkillCommand(object parameter)
+        {
+            HeroesManager.ChangeSkill(SelectedHeroes.Skills[int.Parse(parameter.ToString())]);
+            OnPropertyChanged("Heroes");
+            OnPropertyChanged("SelectedHeroes");
+        }
+
+        public bool CanExecuteSaveSkillCommand(object parameter)
         {
             return true;
         }

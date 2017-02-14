@@ -275,7 +275,14 @@
                                 Update Image
                             </Button>
 
-                            <Button Grid.Column="1" Margin="5 15">Save</Button>
+                            <Button Grid.Column="1"
+                                    Margin="5 15"
+                                    Command="{Binding DataContext.SaveSkill,
+                                                      RelativeSource={RelativeSource FindAncestor,
+                                                                                     AncestorType={x:Type Window}}}"
+                                    CommandParameter="0">
+                                Save
+                            </Button>
 
                             <Button Grid.Column="2"
                                     Margin="5 15"
@@ -427,7 +434,14 @@
                                     CommandParameter="1">
                                 Update Image
                             </Button>
-                            <Button Grid.Column="1" Margin="5 15">Save</Button>
+                            <Button Grid.Column="1"
+                                    Margin="5 15"
+                                    Command="{Binding DataContext.SaveSkill,
+                                                      RelativeSource={RelativeSource FindAncestor,
+                                                                                     AncestorType={x:Type Window}}}"
+                                    CommandParameter="1">
+                                Save
+                            </Button>
                             <Button Grid.Column="2"
                                     Margin="5 15"
                                     Command="{Binding DataContext.ClearSkill,
@@ -576,7 +590,14 @@
                                     CommandParameter="2">
                                 Update Image
                             </Button>
-                            <Button Grid.Column="1" Margin="5 15">Save</Button>
+                            <Button Grid.Column="1"
+                                    Margin="5 15"
+                                    Command="{Binding DataContext.SaveSkill,
+                                                      RelativeSource={RelativeSource FindAncestor,
+                                                                                     AncestorType={x:Type Window}}}"
+                                    CommandParameter="2">
+                                Save
+                            </Button>
                             <Button Grid.Column="2"
                                     Margin="5 15"
                                     Command="{Binding DataContext.ClearSkill,
@@ -726,7 +747,14 @@
                                     CommandParameter="3">
                                 Update Image
                             </Button>
-                            <Button Grid.Column="1" Margin="5 15">Save</Button>
+                            <Button Grid.Column="1"
+                                    Margin="5 15"
+                                    Command="{Binding DataContext.SaveSkill,
+                                                      RelativeSource={RelativeSource FindAncestor,
+                                                                                     AncestorType={x:Type Window}}}"
+                                    CommandParameter="3">
+                                Save
+                            </Button>
                             <Button Grid.Column="2"
                                     Margin="5 15"
                                     Command="{Binding DataContext.ClearSkill,

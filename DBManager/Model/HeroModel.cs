@@ -90,7 +90,7 @@ namespace DBManager.Model
             Name = name;
             Descriptions = descriptions;
             Id = id;
-            ImagePath = "../Resources/" + imagePath + ".jpg";
+            ImagePath = imagePath;
         }
     }
 }

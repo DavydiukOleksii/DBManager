@@ -119,7 +119,7 @@ namespace DataRepository
 
                     using (SQLiteCommand com = new SQLiteCommand(conn))
                     {
-                        com.CommandText = "UPDATE Heroes SET Name=" + hero.Name + ", Descriptions=" + hero.Descriptions + ", Image=" + hero.ImagePath + " WHERE id=" + hero.Id;
+                        com.CommandText = "UPDATE Heroes SET Name='" + hero.Name + "', Descriptions='" + hero.Descriptions + "', Image='" + hero.ImagePath + "' WHERE id=" + hero.Id;
                         com.ExecuteNonQuery();
                     }
 
@@ -157,9 +157,6 @@ namespace DataRepository
             }
             return true;
         }
-
-
-
 
         public int Insert(HeroDb newHero)
         {

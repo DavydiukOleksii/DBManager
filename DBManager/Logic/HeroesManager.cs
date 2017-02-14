@@ -116,9 +116,27 @@ namespace DBManager.Logic
             return idList;
         }
 
-        public static bool ChangeHero(HeroModel changeHero)
+        public static void ChangeHero(HeroModel changeHero)
         {
-            return false;
+            HeroDb tmpHero = new HeroDb
+            {
+                Name = changeHero.Name,
+                Descriptions = changeHero.Descriptions,
+                ImagePath = changeHero.ImagePath,
+                Id = changeHero.Id
+            };
+
+            StatsDb tmpHeroStat = new StatsDb
+            {
+                Armor = changeHero.Stats.Armor,
+                Attack = changeHero.Stats.Attack,
+                Health = changeHero.Stats.Health,
+                Miss = changeHero.Stats.Miss,
+                Id = changeHero.Stats.Id
+            };
+
+            StatsRepository.Instance.Update(tmpHeroStat);
+            HeroesRepository.Instance.Update(tmpHero);
         }
 
         public static void DeleteHero(HeroModel delHero)
@@ -132,6 +150,29 @@ namespace DBManager.Logic
             }
 
             HeroesRepository.Instance.Delete(delHero.Id);
+        }
+
+        public static void ChangeSkill(SkillModel changSkill)
+        {
+            SkillDb tmpSkill = new SkillDb
+            {
+                Name = changSkill.Name,
+                Descriptions = changSkill.Descriptions,
+                ImagePath = changSkill.ImagePath,
+                Id = changSkill.Id
+            };
+
+            StatsDb tmpHeroStat = new StatsDb
+            {
+                Armor = changSkill.Stats.Armor,
+                Attack = changSkill.Stats.Attack,
+                Health = changSkill.Stats.Health,
+                Miss = changSkill.Stats.Miss,
+                Id = changSkill.Stats.Id
+            };
+
+            StatsRepository.Instance.Update(tmpHeroStat);
+            SkillsRepository.Instance.Update(tmpSkill);
         }
     }
 }
