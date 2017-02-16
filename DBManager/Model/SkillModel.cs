@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using DBManager.Infrastructure;
 using DBManager.ViewModel;
 
 namespace DBManager.Model
@@ -41,8 +43,8 @@ namespace DBManager.Model
             }
         }
 
-        private string _imagePath;
-        public string ImagePath
+        private byte[] _imagePath;
+        public byte[] ImagePath
         {
             get { return _imagePath; }
             set { _imagePath = value; OnPropertyChanged("ImagePath"); }
@@ -63,12 +65,12 @@ namespace DBManager.Model
         {
             Name = "Skill name";
             Descriptions = "Skill descr";
-            ImagePath = "../Resources/imageNotFound.png";
+            ImagePath = ImageConverter.GetImage(Path.GetFullPath("../../Resources/notFound.png"));
 
             Stats = new StatsModel();
         }
 
-        public SkillModel(int id, string name, string desc, string imagePath, StatsModel stat)
+        public SkillModel(int id, string name, string desc, byte[] imagePath, StatsModel stat)
         {
             Id = id;
             Name = name;

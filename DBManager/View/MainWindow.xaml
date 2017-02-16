@@ -91,10 +91,9 @@
                     <Image Grid.Row="0"
                            Grid.RowSpan="3"
                            Grid.Column="0"
-                           Margin="5"
+                           Margin="5 25 5 15"
                            Source="{Binding ImagePath,
-                                            UpdateSourceTrigger=PropertyChanged,
-                                            Mode=TwoWay}"
+                                            UpdateSourceTrigger=PropertyChanged}"
                            Stretch="Uniform" />
 
                     <TextBox Grid.Row="0"

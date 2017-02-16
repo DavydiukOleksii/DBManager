@@ -8,7 +8,7 @@
         public string Name { get; set; }
         public string Descriptions { get; set; }
 
-        public string ImagePath { get; set; }
+        public byte[] ImagePath { get; set; }
 
         public int Skill1Id { get; set; }
         public int Skill2Id { get; set; }

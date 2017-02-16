@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -80,7 +81,7 @@ namespace DBManager.ViewModel
             {
                 // Open document 
                 string filename = dlg.FileName;
-                SelectedHeroes.ImagePath = filename;
+                SelectedHeroes.ImagePath = ImageConverter.GetImage(filename);
                 OnPropertyChanged("SelectedHeroes");
                 OnPropertyChanged("ImagePath");
             }
@@ -233,7 +234,7 @@ namespace DBManager.ViewModel
             {
                 SelectedHeroes.Name = "Meme name.";
                 SelectedHeroes.Descriptions = "Meme descriptions.";
-                SelectedHeroes.ImagePath = "../Resources/imageNotFound.png";
+                SelectedHeroes.ImagePath = ImageConverter.GetImage(Path.GetFullPath("../../Resources/notFound.png"));
                 SelectedHeroes.Stats = new StatsModel(SelectedHeroes.Stats.Id);
             }
 
@@ -272,7 +273,7 @@ namespace DBManager.ViewModel
             {
                 SelectedHeroes.Skills[int.Parse(parameter.ToString())].Name = "Skill name.";
                 SelectedHeroes.Skills[int.Parse(parameter.ToString())].Descriptions = "Skill descriptions.";
-                SelectedHeroes.Skills[int.Parse(parameter.ToString())].ImagePath = "../Resources/imageNotFound.png";
+                SelectedHeroes.Skills[int.Parse(parameter.ToString())].ImagePath = ImageConverter.GetImage("../Resources/imageNotFound.png");
 
                 SelectedHeroes.Skills[int.Parse(parameter.ToString())].Stats = new StatsModel(SelectedHeroes.Skills[int.Parse(parameter.ToString())].Stats.Id);
 
@@ -348,7 +349,7 @@ namespace DBManager.ViewModel
             {
                 // Open document 
                 string filename = dlg.FileName;
-                SelectedHeroes.Skills[int.Parse(parameter.ToString())].ImagePath = filename;
+                SelectedHeroes.Skills[int.Parse(parameter.ToString())].ImagePath = ImageConverter.GetImage(filename);
                 OnPropertyChanged("SelectedHeroes");
                 OnPropertyChanged("ImagePath");
             }

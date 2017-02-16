@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
+using DBManager.Infrastructure;
 using DBManager.ViewModel;
 
 namespace DBManager.Model
@@ -41,8 +44,8 @@ namespace DBManager.Model
             }
         }
 
-        private string _imagePath;
-        public string ImagePath 
+        private byte[] _imagePath;
+        public byte[] ImagePath 
         { 
             get{return _imagePath;}
             set { _imagePath = value; OnPropertyChanged("ImagePath"); }
@@ -73,7 +76,7 @@ namespace DBManager.Model
         {
             Name = "Meme name";
             Descriptions = "Meme descriptions.";
-            ImagePath = "../Resources/imageNotFound.png";
+            ImagePath = ImageConverter.GetImage(Path.GetFullPath("../../Resources/notFound.png"));
 
             Stats = new StatsModel();
 
@@ -85,7 +88,7 @@ namespace DBManager.Model
             Skills.Add(new SkillModel());
         }
 
-        public HeroModel(int id, string name, string descriptions, string imagePath)
+        public HeroModel(int id, string name, string descriptions, byte[] imagePath)
         {
             Name = name;
             Descriptions = descriptions;

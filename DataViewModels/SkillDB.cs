@@ -9,6 +9,6 @@
 
         public int StatId { get; set; }
 
-        public string ImagePath { get; set; }
+        public byte[] ImagePath { get; set; }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using DataViewModels;
 
 namespace DataRepository
@@ -82,15 +84,23 @@ namespace DataRepository
                     {
                         while (reader.Read())
                         {
-
+                            var memoryStream = new MemoryStream((byte[])reader["Image"]);
+                            object result = null;
+                            try
+                            {
+                                memoryStream.Seek(0, SeekOrigin.Begin);
+                                result = new BinaryFormatter().Deserialize(memoryStream);
+                            }
+                            catch{}
                             resoult = new SkillDb
                             {
                                 Id = int.Parse(reader["Id"].ToString()),
                                 Name = reader["Name"].ToString(),
                                 Descriptions = reader["Descriptions"].ToString(),
-                                ImagePath = reader["Image"].ToString(),
+                                ImagePath = (byte[]) result,
                                 StatId = int.Parse(reader["StatsId"].ToString()),
                             };
+                            
                         }
                     }
                 }
@@ -115,12 +125,29 @@ namespace DataRepository
                 {
                     conn.Open();
 
-                    using (SQLiteCommand com = new SQLiteCommand(conn))
-                    {
-                        com.CommandText = "UPDATE Skills SET Name='" + newSkill.Name + "', Descriptions='" + newSkill.Descriptions + "', Image='" + newSkill.ImagePath + "' WHERE id=" + newSkill.Id;
-                        com.ExecuteNonQuery();
-                    }
+                    //using (SQLiteCommand com = new SQLiteCommand(conn))
+                    //{
 
+
+
+                    //    com.CommandText = "UPDATE Skills SET Name='" + newSkill.Name + "', Descriptions='" + newSkill.Descriptions + "', Image='" + newSkill.ImagePath + "' WHERE id=" + newSkill.Id;
+                    //    com.ExecuteNonQuery();
+                    //}
+
+                    var sql = "UPDATE Skills SET Name=$Name, Descriptions=$Descriptions, Image=$Image WHERE id= $ID";
+                    using (var command = new SQLiteCommand(sql, conn))
+                        {
+                            command.Parameters.AddWithValue("$Name", newSkill.Name);
+                            command.Parameters.AddWithValue("$Descriptions", newSkill.Descriptions);
+                            using (var ImagePathBinary = new MemoryStream())
+                            {
+                                new BinaryFormatter().Serialize(ImagePathBinary, newSkill.ImagePath);
+                                ImagePathBinary.Seek(0, SeekOrigin.Begin);
+                                command.Parameters.AddWithValue("$Image", ImagePathBinary.ToArray());
+                            }
+                            command.Parameters.AddWithValue("$ID", newSkill.Id);
+                            command.ExecuteNonQuery();
+                        }
                     conn.Close();
                 }
             }
@@ -166,9 +193,27 @@ namespace DataRepository
 
                 using (SQLiteCommand com = new SQLiteCommand(conn))
                 {
-                    com.CommandText = "INSERT INTO Skills (Name, Descriptions, Image, StatsId) VALUES('" + newSkill.Name + "', '" + newSkill.Descriptions + "', '" + newSkill.ImagePath + "', ' " + newSkill.StatId + "')";
-                    com.ExecuteNonQuery();
+                    //com.CommandText = "INSERT INTO Skills (Name, Descriptions, Image, StatsId) VALUES('" + newSkill.Name + "', '" + newSkill.Descriptions + "', '" + newSkill.ImagePath.ToString() + "', ' " + newSkill.StatId + "')";
+                    //com.ExecuteNonQuery();
 
+                    var sql = "INSERT INTO Skills (Name, Descriptions, Image, StatsId) VALUES($Name, $Descriptions, $Image, $StatId)";
+                    using (var command = new SQLiteCommand(sql, conn))
+                    {
+                        command.Parameters.AddWithValue("$Name", newSkill.Name);
+                        command.Parameters.AddWithValue("$Descriptions", newSkill.Descriptions);
+                        using (var ImagePathBinary = new MemoryStream())
+                        {
+                            try
+                            {
+                                new BinaryFormatter().Serialize(ImagePathBinary, newSkill.ImagePath);
+                                ImagePathBinary.Seek(0, SeekOrigin.Begin);
+                            }
+                            catch { }
+                            command.Parameters.AddWithValue("$Image", ImagePathBinary.ToArray());
+                        }
+                        command.Parameters.AddWithValue("$StatId", newSkill.StatId);
+                        command.ExecuteNonQuery();
+                    }
 
                     com.CommandText = "SELECT last_insert_rowid()";
 
